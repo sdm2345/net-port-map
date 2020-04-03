@@ -22,7 +22,7 @@ redis-cli -h 127.0.0.1 -p 80 incr a
 curl http://locahost:80/hello
 curl https://domain:80/hello
     
-$未适配的tcp 协议放到最后即可
+#未适配的tcp 协议放到最后即可
 
  
 net-port-map \
@@ -34,3 +34,24 @@ net-port-map \
 
 go run main.go  -l tcp://0.0.0.0:80 -f http://127.0.0.1:8080 -f https://127.0.0.1:7788 -f redis://127.0.0.1:6379  -f tcp://127.0.0.1:4456
 ```    
+
+```bash 
+使用 nmap 探测协议版本行为
+sudo nmap -sV 127.0.0.1 -p 80                                                                                                            130 ↵
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-04-03 16:52 CST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00015s latency).
+
+PORT   STATE SERVICE VERSION
+80/tcp open  http    nginx 1.17.9
+sudo nmap -sV 127.0.0.1 -p 6379
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-04-03 16:52 CST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00013s latency).
+
+PORT     STATE SERVICE VERSION
+6379/tcp open  redis   Redis key-value store 5.0.8
+
+
+
+```

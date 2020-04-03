@@ -57,7 +57,7 @@ func (s *Server) Listen(ctx context.Context, addr string) {
         for _, f := range s.matches {
             
             if n >= f.MinLen() && f.IsMatch(buf[:n]) {
-                //log.Println("match ok", f.Name())
+                log.Println("match ok", f.Name())
                 go func() {
                     err := f.Forward(ctx, buf[:n], conn)
                     if err != nil {

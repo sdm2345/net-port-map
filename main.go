@@ -66,6 +66,8 @@ func main() {
         switch info.Scheme {
         case "http":
             s.Add(port_map.NewHttpForward(info.Host))
+        case "ssh":
+            s.Add(port_map.NewSshForward(info.Host))
         case "https":
             s.Add(port_map.NewHttpsForward(info.Host))
         case "redis":

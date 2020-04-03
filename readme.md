@@ -33,6 +33,24 @@ net-port-map \
     -f tcp://127.0.0.1:1080 
 
 go run main.go  -l tcp://0.0.0.0:80 -f http://127.0.0.1:8080 -f https://127.0.0.1:7788 -f redis://127.0.0.1:6379  -f tcp://127.0.0.1:4456
+
+
+ssh 协议 测试
+go run main.go \
+    -l tcp://0.0.0.0:80 \
+    -f redis://127.0.0.1:6379 \
+    -f http://127.0.0.1:8080 \
+    -f https://127.0.0.1:1443 \
+    -f ssh://127.0.0.1:22 
+
+
+redis-cli -h 127.0.0.1 -p 80 incr a
+curl http://locahost:80/hello
+curl https://domain:80/hello
+ssh 127.0.0.1 -p 80
+╰─$ ssh 127.0.0.1 -p 80                                                                                                                      255 ↵
+The authenticity of host '[127.0.0.1]:80 ([127.0.0.1]:80)' can't be established.
+
 ```    
 
 ```bash 

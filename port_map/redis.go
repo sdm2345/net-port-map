@@ -1,9 +1,9 @@
 package port_map
 
 import (
-	"log"
-	"reflect"
-	"regexp"
+    "log"
+    "reflect"
+    "regexp"
 )
 
 /**
@@ -34,36 +34,35 @@ $<参数1 的字节数量> CR LF
 */
 
 type RedisForward struct {
-	TcpForwarder
+    TcpForwarder
 }
 
 func NewRedisForward(addr string) Forwarder {
-	return &RedisForward{
-		TcpForwarder: TcpForwarder{Addr: addr},
-	}
+    return &RedisForward{
+        TcpForwarder: TcpForwarder{Addr: addr},
+    }
 }
 
 var redisReg *regexp.Regexp
 
 func init() {
-	var err error
-	redisReg, err = regexp.Compile("^\\*[0-9]+\r\n\\$[0-9]+")
-	if err != nil {
-		log.Fatal(err)
-	}
+    var err error
+    redisReg, err = regexp.Compile("^\\*[0-9]+\r\n\\$[0-9]+")
+    if err != nil {
+        log.Fatal(err)
+    }
 }
 
-
 func (f *RedisForward) Name() string {
-	return reflect.TypeOf(*f).Name()
+    return reflect.TypeOf(*f).Name()
 }
 
 func (f *RedisForward) MinLen() int {
-	//8 字节 可以探测出来了
-	return 8
+    //8 字节 可以探测出来了
+    return 8
 }
 
 func (f *RedisForward) IsMatch(buf []byte) bool {
-
-	return redisReg.Match(buf)
+    
+    return redisReg.Match(buf)
 }

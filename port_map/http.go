@@ -1,64 +1,64 @@
 package port_map
 
 import (
-	"net/http"
-	"reflect"
+    "net/http"
+    "reflect"
 )
 
 var requests []string
 
 func init() {
-	requests = []string{
-		http.MethodGet,
-		http.MethodHead,
-		http.MethodPost,
-		http.MethodPut,
-		http.MethodPatch,
-		http.MethodDelete,
-		http.MethodConnect,
-		http.MethodOptions,
-		http.MethodTrace,
-	}
+    requests = []string{
+        http.MethodGet,
+        http.MethodHead,
+        http.MethodPost,
+        http.MethodPut,
+        http.MethodPatch,
+        http.MethodDelete,
+        http.MethodConnect,
+        http.MethodOptions,
+        http.MethodTrace,
+    }
 }
 
 type HttpForward struct {
-	TcpForwarder
+    TcpForwarder
 }
 
 func NewHttpForward(addr string) Forwarder {
-	return &HttpForward{
-		TcpForwarder{Addr: addr},
-	}
+    return &HttpForward{
+        TcpForwarder{Addr: addr},
+    }
 }
 
 func (f *HttpForward) Name() string {
-	return reflect.TypeOf(*f).Name()
+    return reflect.TypeOf(*f).Name()
 }
 
 //head 匹配的最小长度
 func (f *HttpForward) MinLen() int {
-	var v0 int
-	//取最大值
-	for _, v := range requests {
-		v0=getMax(v0,len(v))
-	}
-	return v0 + 1
+    var v0 int
+    //取最大值
+    for _, v := range requests {
+        v0 = getMax(v0, len(v))
+    }
+    return v0 + 1
 }
 
 func (f *HttpForward) IsMatch(buf []byte) bool {
-	if len(buf)<f.MinLen(){
-		return false
-	}
-	for _, f := range requests {
-		//tcp 数据流 的开始  "GET " OR "POST "  ...
-		if string(buf[:len(f)+1]) == f+" " {
-			//log.Println("match http ok",f)
-			return true
-		}
-	}
-
-	return false
-
+    if len(buf) < f.MinLen() {
+        return false
+    }
+    for _, f := range requests {
+        //tcp 数据流 的开始  "GET " OR "POST "  ...
+        if string(buf[:len(f)+1]) == f+" " {
+            //log.Println("match http ok",f)
+            return true
+        }
+    }
+    
+    return false
+    
 }
 
 // ╰─$ nc -l 0.0.0.0 1234 | xxd                                                                                                                 130 ↵
@@ -133,31 +133,30 @@ func (f *HttpForward) IsMatch(buf []byte) bool {
 //那么就是可以 认为是https 协议
 
 type HttpsForward struct {
-	TcpForwarder
+    TcpForwarder
 }
 
 func NewHttpsForward(addr string) Forwarder {
-	return &HttpsForward{
-		TcpForwarder{Addr: addr},
-	}
+    return &HttpsForward{
+        TcpForwarder{Addr: addr},
+    }
 }
 
 func (f *HttpsForward) Name() string {
-	return reflect.TypeOf(*f).Name()
+    return reflect.TypeOf(*f).Name()
 }
 
-
 func (f *HttpsForward) MinLen() int {
-	return 10
+    return 10
 }
 
 func (f *HttpsForward) IsMatch(buf []byte) bool {
-
-	if len(buf)<6{
-		return false
-	}
-	if buf[0] != 0x16 || buf[5] != 1 {
-		return false
-	}
-	return true
+    
+    if len(buf) < 6 {
+        return false
+    }
+    if buf[0] != 0x16 || buf[5] != 1 {
+        return false
+    }
+    return true
 }
